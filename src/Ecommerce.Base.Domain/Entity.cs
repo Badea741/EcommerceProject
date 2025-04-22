@@ -1,28 +1,32 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace Ecommerce.Base.Domain;
 
-namespace Ecommerce.Base.Domain;
-
-public abstract class Entity : IEquatable<Entity>, IEqualityComparer<Entity>
+public abstract class Entity : IEquatable<Entity>
 {
     public Guid Id { get; init; }
 
-
     public bool Equals(Entity? other)
     {
-        if (other is null)
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id == other.Id;
+    }
+
+    public override bool Equals(object? obj) =>
+        Equals(obj as Entity);
+    
+    public override int GetHashCode() =>
+        Id.GetHashCode();
+
+    public static bool operator ==(Entity left, Entity right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+        if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
+        {
             return false;
-        return Id.Equals(other.Id);
+        }
+        return ReferenceEquals(left, right) || left!.Equals(right);
     }
-
-    public bool Equals(Entity? x, Entity? y)
-    {
-        if (x is null && y is null) return true;
-        if (x is null || y is null) return false;
-        return x.Equals(y);
-    }
-
-    public int GetHashCode([DisallowNull] Entity obj)
-    {
-        return HashCode.Combine(Id, obj.Id);
-    }
+    public static bool operator !=(Entity left, Entity right) =>
+        !(left == right);
 }

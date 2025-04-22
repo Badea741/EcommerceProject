@@ -1,14 +1,28 @@
 ﻿using Ecommerce.Base.Domain;
+using Ecommerce.Customer.Domain.Exceptions;
 
 namespace Ecommerce.Customer.Domain;
-public class Address(string city, string zipCode, string country) : ValueObject
+public class Address : ValueObject
 {
     public string? Street { get; private init; }
-    public string City { get; private init; } = city;
+    public string City { get; private init; }
     public string? State { get; private init; }
-    public string ZipCode { get; private init; } = zipCode;
-    public string Country { get; private init; } = country;
+    public string ZipCode { get; private init; }
+    public string Country { get; private init; }
     public string? ApartmentNo { get; private init; }
+
+    public Address(string city, string zipCode, string country)
+    {
+        City = string.IsNullOrWhiteSpace(city) ?
+            throw new AddressInvalidException("City is required") :
+            city;
+        ZipCode = string.IsNullOrEmpty(zipCode) ?
+            throw new AddressInvalidException("ZipCode is required") :
+            zipCode;
+        Country = string.IsNullOrEmpty(country) ?
+            throw new AddressInvalidException("Country is required") :
+            country;
+    }
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {

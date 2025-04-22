@@ -1,9 +1,8 @@
 ﻿namespace Ecommerce.Customer.Domain;
 public interface IRepository
 {
-    Task<Customer?> GetByIdAsync(int id);
-    Task<IEnumerable<Customer>> GetAllAsync();
-    void AddAsync(Customer customer);
-    void UpdateAsync(Customer customer);
-    void DeleteAsync(Customer customer);
+    Task<Customer?> Get(int id);
+    void Add(Customer customer);
+    void Update(Customer customer);
+    void Delete(Customer customer);
 }
