@@ -1,4 +1,5 @@
 using Ecommerce.Customer.Api;
+using Ecommerce.Gateway.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddCustomerApi();
 
 var app = builder.Build();
+app.ConfigureExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
