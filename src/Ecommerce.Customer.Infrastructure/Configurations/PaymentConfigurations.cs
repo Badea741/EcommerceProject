@@ -11,6 +11,8 @@ namespace Ecommerce.Customer.Infrastructure.Configurations
             builder.Property(p => p.PaymentMethod)
                 .HasConversion(method => method.ToString(),
                 method => Enum.Parse<PaymentMethod>(method));
+
+            builder.OwnsOne(x => x.CardExpiry);
         }
     }
 }

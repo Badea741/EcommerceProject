@@ -8,11 +8,7 @@ namespace Ecommerce.Customer.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Domain.Customer> builder)
         {
             builder.OwnsOne(c => c.Address);
-
-            builder.HasOne(c => c.PaymentInformation)
-                .WithOne(p => p.Customer)
-                .HasForeignKey<Domain.PaymentInformation>(p => p.CustomerId)
-                .IsRequired(false);
+            builder.HasMany(x => x.PaymentInformation);
         }
     }
 }
