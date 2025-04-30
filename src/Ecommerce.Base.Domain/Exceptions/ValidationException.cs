@@ -1,8 +1,5 @@
-﻿namespace Ecommerce.Base.Domain.Exceptions
+﻿namespace Ecommerce.Base.Domain.Exceptions;
+
+public abstract class ValidationException(string message) : Exception(message)
 {
-    public abstract class ValidationException : Exception
-    {
-        public ValidationException(string message) :base(message)
-        { }
-    }
 }

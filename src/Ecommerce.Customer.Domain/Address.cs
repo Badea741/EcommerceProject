@@ -2,6 +2,7 @@
 using Ecommerce.Customer.Domain.Exceptions;
 
 namespace Ecommerce.Customer.Domain;
+
 public class Address : ValueObject
 {
     public string? Street { get; private init; }
@@ -11,7 +12,8 @@ public class Address : ValueObject
     public string Country { get; private init; }
     public string? ApartmentNo { get; private init; }
 
-    public Address(string city, string zipCode, string country)
+    public Address(string city, string zipCode, string country,
+        string? street = null, string? state = null, string? apartmentNo = null)
     {
         City = string.IsNullOrWhiteSpace(city) ?
             throw new AddressInvalidException("City is required") :
@@ -22,6 +24,10 @@ public class Address : ValueObject
         Country = string.IsNullOrEmpty(country) ?
             throw new AddressInvalidException("Country is required") :
             country;
+
+        Street = street;
+        State = state;
+        ApartmentNo = apartmentNo;
     }
 
     protected override IEnumerable<object?> GetEqualityComponents()
