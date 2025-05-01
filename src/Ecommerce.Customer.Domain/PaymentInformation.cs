@@ -6,52 +6,40 @@ namespace Ecommerce.Customer.Domain;
 public class PaymentInformation : Entity
 {
     public PaymentMethod PaymentMethod { get; private set; }
-    public string? CardNumber { get; private set; } // Store hash value
-    public string? LastFourDigits { get; private set; }
+    public CardIdentification? CardIdentification { get; private set; }
     public CardExpiry? CardExpiry { get; private set; }
-    public string? CardName { get; private set; }
-    public string? CardHolderName { get; private set; }
-    public string? Cvv { get; private set; }
+    public CardInformation? CardInformation { get; private set; }
+    
 
     public PaymentInformation(
         PaymentMethod paymentMethod,
-        string? cardNumber = null,
-        string? lastFourDigits = null,
+        CardIdentification? cardIdentification = null,
         CardExpiry? cardExpiry = null,
-        string? cardName = null,
-        string? cardHolderName = null,
-        string? cvv = null)
+        CardInformation? cardInformation = null)
     {
         if (!Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
             throw new PaymentInvalidException("Invalid payment method");
 
         if (IsCard(paymentMethod))
         {
-            if (string.IsNullOrWhiteSpace(cardNumber))
-                throw new PaymentInvalidException("Card number is required");
-            if (string.IsNullOrWhiteSpace(lastFourDigits) || LastFourDigits?.Length != 4)
-                throw new PaymentInvalidException("Last four digits must be 4 digits");
+            if(cardInformation is null)
+                throw new PaymentInvalidException("Card information is required");
+            
+            SetCardInformation(cardInformation);
 
-            if (string.IsNullOrWhiteSpace(cardName))
-                throw new PaymentInvalidException("Card name is required ");
-            if (string.IsNullOrWhiteSpace(cardHolderName))
-                throw new PaymentInvalidException("Card holder name is required");
+            if (cardIdentification is null)
+                throw new PaymentInvalidException("Card identification is required");
+
+            SetCardIdentification(cardIdentification);
 
             if (cardExpiry is null)
                 throw new PaymentInvalidException("Card expiry is required");
 
             SetCardExpirty(cardExpiry);
 
-            if (string.IsNullOrWhiteSpace(cvv) || cvv?.Length != 3 || !cvv.All(Char.IsDigit))
-                throw new PaymentInvalidException("CVV must be 3 numeric digits");
         }
 
         PaymentMethod = paymentMethod;
-        CardNumber = cardNumber;
-        LastFourDigits = lastFourDigits;
-        CardName = cardName;
-        CardHolderName = cardHolderName;
-        Cvv = cvv;
     }
 
     private void SetCardExpirty(CardExpiry cardExpiry)
@@ -62,6 +50,32 @@ public class PaymentInformation : Entity
             throw new PaymentInvalidException("Invalid Year or Card is expired");
 
         CardExpiry = cardExpiry;
+    }
+
+    private void SetCardIdentification(CardIdentification cardIdentification)
+    {
+        if (string.IsNullOrWhiteSpace(cardIdentification.CardNumber))
+            throw new PaymentInvalidException("Card number is required");
+        
+        if (string.IsNullOrWhiteSpace(cardIdentification.LastFourDigits) ||
+            cardIdentification.LastFourDigits?.Length != 4)
+            throw new PaymentInvalidException("Last four digits must be 4 digits");
+
+        if (string.IsNullOrWhiteSpace(cardIdentification.Cvv) || 
+            cardIdentification.Cvv?.Length != 3 ||!cardIdentification.Cvv.All(Char.IsDigit))
+            throw new PaymentInvalidException("CVV must be 3 numeric digits");
+
+        CardIdentification = cardIdentification;
+    }
+
+    private void SetCardInformation(CardInformation cardInformation)
+    {
+        if (string.IsNullOrWhiteSpace(cardInformation.CardName))
+            throw new PaymentInvalidException("Card name is required ");
+        if (string.IsNullOrWhiteSpace(cardInformation.CardHolderName))
+            throw new PaymentInvalidException("Card holder name is required");
+
+        CardInformation = cardInformation;
     }
 
     private bool IsCard(PaymentMethod paymentMethod) =>

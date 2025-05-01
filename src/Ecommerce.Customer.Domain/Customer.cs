@@ -11,12 +11,13 @@ public class Customer : Entity
     public List<int> WishListProductIds { get; private set; } = new List<int>();
     public ICollection<PaymentInformation> PaymentInformation { get; private set; } = [];
 
-    public Customer(int userId, string name)
+    public Customer(int userId, string name, Address? address = null)
     {
         UserId = userId;
         Name = string.IsNullOrWhiteSpace(name) ?
             throw new CustomerInvalidException("Name is required") :
             name;
+        Address = address;
     }
 
     public void AddToWishList(int productId)
